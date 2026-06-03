@@ -1,8 +1,7 @@
-import 'dart:convert';
+import 'package:alhayat/common/utils/api_client.dart';
 import 'package:alhayat/config/constants.dart';
 import 'package:alhayat/features/feature_home/screens/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:page_transition/page_transition.dart';
 
 Future userValidate({
@@ -13,21 +12,13 @@ Future userValidate({
   debugPrint(email.toString());
   debugPrint(password.toString());
 
-  // Fix: Remove 'https://' from Constants.baseUrl
-  // Constants.baseUrl should be something like: 'api.example.com' not 'https://api.example.com'
-  final response = await http.post(
-    Uri.https(
-      Constants
-          .baseUrl, // This should be just the domain (e.g., 'api.example.com')
-      '/api/v1/login',
-    ),
+  final response = await ApiClient.post(
+    '/api/v1/login',
     body: {'email': email, 'password': password},
   );
 
-  debugPrint(response.statusCode.toString());
-
   if (response.statusCode == 200) {
-    final responseData = jsonDecode(response.body);
+    final responseData = ApiClient.decodeBody(response);
     Constants.getStorage.write('userData', {
       'email': email,
       'password': password,
@@ -46,7 +37,7 @@ Future userValidate({
       ),
     );
   } else if (response.statusCode == 422) {
-    return jsonDecode(response.body);
+    return ApiClient.decodeBody(response);
   } else {
     throw Exception('Error: ${response.statusCode}');
   }

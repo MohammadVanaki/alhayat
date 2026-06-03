@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:alhayat/common/utils/snackbar_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -33,26 +34,18 @@ class ConnectivityController extends GetxController {
       //show no internet dialog/alert
       _showNoInternetDialog();
     } else if (connections.contains(ConnectivityResult.vpn)) {
-      Get.snackbar(
-        'VPN',
-        'اتصال VPN الخاص بك قد يتداخل مع أداء التطبيق.',
-        colorText: Colors.white,
-        backgroundColor: const Color.fromARGB(200, 212, 191, 0),
-        duration: const Duration(seconds: 3),
-        snackPosition: SnackPosition.TOP,
+      showWarningSnackbar(
+        title: 'VPN',
+        message: 'اتصال VPN الخاص بك قد يتداخل مع أداء التطبيق.',
       );
     } else {
       isConnected.value = true;
       //close alert when back online
       _closeDialog();
       if (_isOnline) {
-        Get.snackbar(
-          'تم الاتصال بالانترنت',
-          'مرحبًا بعودتك',
-          colorText: Colors.green[300],
-          backgroundColor: Colors.green[50],
-          duration: const Duration(seconds: 3),
-          snackPosition: SnackPosition.TOP,
+        showSuccessSnackbar(
+          title: 'تم الاتصال بالانترنت',
+          message: 'مرحبًا بعودتك',
         );
       }
     }
@@ -105,13 +98,9 @@ class ConnectivityController extends GetxController {
       isConnected.value = true;
       Get.back();
     } else {
-      Get.snackbar(
-        'غير متصل بالإنترنت!',
-        'تحقق من اتصال الإنترنت وحاول مرة أخرى',
-        colorText: Colors.red[300],
-        backgroundColor: Colors.red[50],
-        duration: const Duration(seconds: 3),
-        snackPosition: SnackPosition.TOP,
+      showErrorSnackbar(
+        title: 'غير متصل بالإنترنت!',
+        message: 'تحقق من اتصال الإنترنت وحاول مرة أخرى',
       );
     }
   }
