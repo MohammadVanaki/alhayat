@@ -11,14 +11,19 @@ class FirebaseNotificationService {
   // Initialize notifications and setup FCM
   Future<void> initializeNotifications() async {
     // Request user permission for notifications
-    await _firebaseMessaging.requestPermission();
+    final settings = await _firebaseMessaging.requestPermission();
+    if (settings.authorizationStatus != AuthorizationStatus.authorized) {
+      print('Notification permission not granted: ${settings.authorizationStatus}');
+    }
 
-    // FirebaseMessaging.instance.getToken().then((token) {
-    //   print("Device Token: $token");
-    // });
     // Retrieve the FCM token
-    Constants.fcmToken = (await _firebaseMessaging.getToken())!;
-    print("FCM Token: ${Constants.fcmToken}");
+    final token = await _firebaseMessaging.getToken();
+    if (token != null) {
+      Constants.fcmToken = token;
+      print("FCM Token: ${Constants.fcmToken}");
+    } else {
+      print('Warning: FCM token is null — push notifications may not work.');
+    }
 
     // Configure local notifications
     await _configureLocalNotifications();
@@ -41,8 +46,9 @@ class FirebaseNotificationService {
     try {
       await _firebaseMessaging.subscribeToTopic(topic);
       print("Subscribed to topic: $topic");
-    } catch (e) {
-      print("Failed to subscribe to topic: $e");
+    } catch (e, stackTrace) {
+      print("Failed to subscribe to topic '$topic': $e");
+      print(stackTrace);
     }
   }
 

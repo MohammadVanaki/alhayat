@@ -41,14 +41,27 @@ void main() async {
     );
   };
 
-  await GetStorage.init();
-  await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
-  FlutterDownloader.registerCallback(downloadCallback);
+  try {
+    await GetStorage.init();
+  } catch (e) {
+    debugPrint('GetStorage.init() failed: $e');
+  }
+
+  try {
+    await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
+    FlutterDownloader.registerCallback(downloadCallback);
+  } catch (e) {
+    debugPrint('FlutterDownloader initialization failed: $e');
+  }
 
   /// Init Firebase
-  await Firebase.initializeApp();
-  await FirebaseMessaging.instance.subscribeToTopic("general");
-  await FirebaseNotificationService().initializeNotifications();
+  try {
+    await Firebase.initializeApp();
+    await FirebaseMessaging.instance.subscribeToTopic("general");
+    await FirebaseNotificationService().initializeNotifications();
+  } catch (e) {
+    debugPrint('Firebase initialization failed: $e');
+  }
 
   /// Run app
   runApp(const MyApp());

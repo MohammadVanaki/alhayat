@@ -104,6 +104,26 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         ],
                       );
                     case ConnectionState.done:
+                      if (snapshot.hasError) {
+                        return Row(
+                          children: <Widget>[
+                            const Icon(
+                              Icons.warning_amber_rounded,
+                              color: Colors.red,
+                              size: 20,
+                            ),
+                            const Gap(5),
+                            Text(
+                              'فشل الاتصال بالخادم. تحقق من اتصالك بالإنترنت.',
+                              style: const TextStyle(
+                                color: Colors.red,
+                                fontSize: 13,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        );
+                      }
                       debugPrint('${snapshot.data?['errors']}');
                       return snapshot.data?['errors'] != null
                           ? Row(
