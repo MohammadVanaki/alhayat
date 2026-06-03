@@ -15,6 +15,7 @@ class ForgotPasswordPage extends StatefulWidget {
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final TextEditingController _controllerEmail = TextEditingController();
   Future? _forgotPasswordFuture;
+  String? _validationError;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -62,12 +63,39 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     controller: _controllerEmail,
                   ),
                   const Gap(20),
+                  if (_validationError != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Text(
+                        _validationError!,
+                        style: const TextStyle(
+                          color: Colors.red,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
                   ElevatedButton(
                     onPressed: () {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      final email = _controllerEmail.text.trim();
+                      if (email.isEmpty) {
+                        setState(() {
+                          _validationError =
+                              'يرجى إدخال البريد الالكتروني';
+                        });
+                        return;
+                      }
+                      if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(email)) {
+                        setState(() {
+                          _validationError =
+                              'يرجى إدخال بريد الكتروني صحيح';
+                        });
+                        return;
+                      }
                       setState(() {
-                        FocusManager.instance.primaryFocus?.unfocus();
+                        _validationError = null;
                         _forgotPasswordFuture =
-                            userForgotPassword(email: _controllerEmail.text);
+                            userForgotPassword(email: email);
                       });
                     },
                     child: Text(

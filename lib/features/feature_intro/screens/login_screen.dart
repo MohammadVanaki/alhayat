@@ -18,9 +18,11 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _controllerPassword = TextEditingController();
   final TextEditingController _controllerEmail = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   final f1 = FocusNode();
   final f2 = FocusNode();
   Future? _userValidateFuture;
+  String? _validationError;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -52,6 +54,7 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
               child: Form(
+                key: _formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -101,13 +104,41 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
+                    if (_validationError != null)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Text(
+                          _validationError!,
+                          style: const TextStyle(
+                            color: Colors.red,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
                     ElevatedButton(
                       onPressed: () {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        final email = _controllerEmail.text.trim();
+                        final password = _controllerPassword.text;
+                        if (email.isEmpty || password.isEmpty) {
+                          setState(() {
+                            _validationError =
+                                'يرجى إدخال البريد الالكتروني وكلمة المرور';
+                          });
+                          return;
+                        }
+                        if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(email)) {
+                          setState(() {
+                            _validationError =
+                                'يرجى إدخال بريد الكتروني صحيح';
+                          });
+                          return;
+                        }
                         setState(() {
-                          FocusManager.instance.primaryFocus?.unfocus();
+                          _validationError = null;
                           _userValidateFuture = userValidate(
-                            email: _controllerEmail.text,
-                            password: _controllerPassword.text,
+                            email: email,
+                            password: password,
                             context: context,
                           );
                         });

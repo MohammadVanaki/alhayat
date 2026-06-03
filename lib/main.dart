@@ -1,5 +1,6 @@
 import 'dart:isolate';
 import 'dart:ui';
+import 'package:flutter/foundation.dart';
 import 'package:alhayat/config/light_theme.dart';
 import 'package:alhayat/config/notification.dart';
 import 'package:alhayat/features/feature_intro/screens/splash_screen.dart';
@@ -34,7 +35,11 @@ void main() async {
           children: [
             Lottie.asset('assets/lottiefiles/lottieError.json'),
             const Gap(10),
-            Text(details.exception.toString()),
+            Text(
+              kDebugMode
+                  ? details.exception.toString()
+                  : 'حدث خطأ غير متوقع',
+            ),
           ],
         ),
       ),
@@ -42,7 +47,7 @@ void main() async {
   };
 
   await GetStorage.init();
-  await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
+  await FlutterDownloader.initialize(debug: kDebugMode, ignoreSsl: false);
   FlutterDownloader.registerCallback(downloadCallback);
 
   /// Init Firebase
