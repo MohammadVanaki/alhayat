@@ -14,7 +14,7 @@ plugins {
 }
 
 android {
-    namespace = "com.dijlah.ainalhayat"
+    namespace = "com.dijlah.uni.ainalhayat"
     compileSdk = 36
     ndkVersion = "27.0.12077973"
 
@@ -39,7 +39,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.dijlah.ainalhayat"
+        applicationId = "com.dijlah.uni.ainalhayat"
         minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

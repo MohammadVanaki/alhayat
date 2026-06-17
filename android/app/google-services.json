@@ -235,6 +235,25 @@
     },
     {
       "client_info": {
+        "mobilesdk_app_id": "1:1048912133961:android:69fd8aad6521cc115ae498",
+        "android_client_info": {
+          "package_name": "com.dijlah.uni.ainalhayat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBB77SadYGeS40kqFhIroMLUexai7wPhyE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:1048912133961:android:0ef2a091e0fb5e4a5ae498",
         "android_client_info": {
           "package_name": "com.dijlah.wasama"

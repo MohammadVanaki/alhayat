@@ -1,4 +1,4 @@
-package com.dijlah.ainalhayat
+package com.dijlah.uni.ainalhayat
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,7 +1,7 @@
 name: alhayat
 description: "A new Flutter project."
-publish_to: 'none'
-version: 1.2.0
+publish_to: "none"
+version: 1.0.3+3
 
 environment:
   sdk: ^3.8.0
@@ -43,7 +43,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  
+
   assets:
     - assets/images/
     - assets/svgs/
