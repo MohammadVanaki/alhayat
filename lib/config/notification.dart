@@ -1,5 +1,6 @@
 import 'package:alhayat/config/constants.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 
@@ -18,7 +19,6 @@ class FirebaseNotificationService {
     // });
     // Retrieve the FCM token
     Constants.fcmToken = (await _firebaseMessaging.getToken())!;
-    print("FCM Token: ${Constants.fcmToken}");
 
     // Configure local notifications
     await _configureLocalNotifications();
@@ -28,7 +28,7 @@ class FirebaseNotificationService {
 
     // Handle foreground messages
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print("Message received in foreground: ${message.notification?.title}");
+      debugPrint("Message received in foreground: ${message.notification?.title}");
       _showLocalNotification(message);
     });
 
@@ -40,9 +40,8 @@ class FirebaseNotificationService {
   Future<void> subscribeToTopic(String topic) async {
     try {
       await _firebaseMessaging.subscribeToTopic(topic);
-      print("Subscribed to topic: $topic");
     } catch (e) {
-      print("Failed to subscribe to topic: $e");
+      debugPrint("Failed to subscribe to topic: $e");
     }
   }
 
@@ -86,5 +85,5 @@ class FirebaseNotificationService {
 
 // Background message handler
 Future<void> handleFirebaseBackgroundMessage(RemoteMessage message) async {
-  print("Handling a background message: ${message.messageId}");
+  debugPrint("Handling a background message: ${message.messageId}");
 }

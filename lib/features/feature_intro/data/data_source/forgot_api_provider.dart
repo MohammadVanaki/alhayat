@@ -8,7 +8,6 @@ Future userForgotPassword({required String email}) async {
     Uri.https(Constants.baseUrl, '/api/v1/forget-password', {'email': email}),
   );
   debugPrint(response.statusCode.toString());
-  debugPrint(jsonDecode(response.body).toString());
   if (response.statusCode == 200) {
     return jsonDecode(response.body);
   } else {

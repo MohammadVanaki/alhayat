@@ -118,9 +118,9 @@ class _HomePageState extends State<HomePage> {
     _getContents();
     showDownloadPanelNotifier.addListener(() {
       if (showDownloadPanelNotifier.value) {
-        print("Download panel should show");
+        debugPrint("Download panel should show");
       } else {
-        print("Download panel should hide");
+        debugPrint("Download panel should hide");
       }
     });
   }
@@ -132,7 +132,6 @@ class _HomePageState extends State<HomePage> {
       final response = await http.get(Uri.parse(url));
 
       debugPrint("Config HTTP status: ${response.statusCode}");
-      debugPrint("Config raw body: ${response.body}");
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> body = jsonDecode(response.body);
@@ -220,7 +219,7 @@ class _HomePageState extends State<HomePage> {
     Size size = MediaQuery.of(context).size;
     Future<bool> _exitApp(BuildContext context) async {
       if (await controller.canGoBack()) {
-        print("onwill goback");
+        debugPrint("onwill goback");
         controller.goBack();
         return Future.value(true);
       } else {
@@ -1011,10 +1010,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   fetchContent({required String uriTab}) {
-    debugPrint(
-      'token===========================>>>' +
-          Constants.getStorage.read('userData')['token'],
-    );
+
     setState(() {
       loadContent = true;
       controller.loadRequest(
@@ -1036,7 +1032,7 @@ class _HomePageState extends State<HomePage> {
   ) async {
     final cleanTitle = filetitle.split('#')[0].trim();
     final fileExtension = p.extension(fileName);
-    print("fileExtension=====>$fileExtension");
+
 
     if (fileExtension == '.mp3' || fileExtension == '.pdf') {
       final boxName = fileExtension == '.mp3' ? 'audioes' : 'pdfs';
@@ -1091,7 +1087,7 @@ class _HomePageState extends State<HomePage> {
         'filePath': fullFilePath,
       });
       storage.write(boxName, filesList);
-      print('filesList after save: ${storage.read(boxName)}');
+  
     }
   }
 

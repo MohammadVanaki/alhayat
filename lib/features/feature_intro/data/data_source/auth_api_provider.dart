@@ -10,9 +10,6 @@ Future userValidate({
   required String email,
   required String password,
 }) async {
-  debugPrint(email.toString());
-  debugPrint(password.toString());
-
   // Fix: Remove 'https://' from Constants.baseUrl
   // Constants.baseUrl should be something like: 'api.example.com' not 'https://api.example.com'
   final response = await http.post(
@@ -30,7 +27,6 @@ Future userValidate({
     final responseData = jsonDecode(response.body);
     Constants.getStorage.write('userData', {
       'email': email,
-      'password': password,
       'photo': responseData['photo'],
       'name': responseData['name'],
       'study_stages': responseData['study_stages'],

@@ -23,7 +23,7 @@ class _OfflinePageState extends State<OfflinePage> {
   @override
   void initState() {
     super.initState();
-    print('🟡 initState called');
+
     player = AudioPlayer();
     player.setReleaseMode(ReleaseMode.stop);
     loadOfflineFiles();
@@ -233,7 +233,7 @@ class _OfflinePageState extends State<OfflinePage> {
   }
 
   Future<void> loadOfflineFiles() async {
-    print('🟢 loadOfflineFiles started');
+
 
     // Initialize GetStorage boxes
     await GetStorage.init('audioes');
@@ -246,11 +246,11 @@ class _OfflinePageState extends State<OfflinePage> {
     // Read audio list from storage
     final audioListRaw =
         audioStorage.read('audioes'); // If saved under key 'audioes'
-    print('🔵 audioes from storage: $audioListRaw');
+
 
     // Read pdf list from storage
     final pdfListRaw = pdfStorage.read('pdfs'); // If saved under key 'pdfs'
-    print('🟣 pdfs from storage: $pdfListRaw');
+
 
     // Update the state with retrieved data
     setState(() {
