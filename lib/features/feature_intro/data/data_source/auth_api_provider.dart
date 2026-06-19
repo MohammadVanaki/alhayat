@@ -9,13 +9,15 @@ Future userValidate({
   required context,
   required String email,
   required String password,
+  http.Client? client,
 }) async {
   debugPrint(email.toString());
   debugPrint(password.toString());
 
+  final httpClient = client ?? http.Client();
   // Fix: Remove 'https://' from Constants.baseUrl
   // Constants.baseUrl should be something like: 'api.example.com' not 'https://api.example.com'
-  final response = await http.post(
+  final response = await httpClient.post(
     Uri.https(
       Constants
           .baseUrl, // This should be just the domain (e.g., 'api.example.com')
