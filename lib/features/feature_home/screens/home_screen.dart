@@ -5,18 +5,17 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:alhayat/common/utils/costum_dialog_message.dart';
+import 'package:alhayat/common/utils/dialog_helpers.dart';
+import 'package:alhayat/common/utils/navigation_helpers.dart';
 import 'package:alhayat/common/utils/costum_loading.dart';
 import 'package:alhayat/config/constants.dart';
 import 'package:alhayat/features/feature_home/widgets/notif_card.dart';
-import 'package:alhayat/features/feature_intro/screens/login_screen.dart';
 import 'package:alhayat/features/feature_offline/screens/main_offline_screen.dart';
 import 'package:alhayat/main.dart';
-import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:http/http.dart' as http;
-import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
@@ -295,16 +294,7 @@ class _HomePageState extends State<HomePage> {
                             titleText: 'هل تريد تسجيل الخروج من حسابك؟',
                             disableText: 'لا',
                             enableText: 'نعم',
-                            enable: () {
-                              Constants.getStorage.remove('userData');
-                              Navigator.pushReplacement(
-                                context,
-                                PageTransition(
-                                  child: const LoginPage(),
-                                  type: PageTransitionType.bottomToTop,
-                                ),
-                              );
-                            },
+                            enable: () => logoutAndNavigateToLogin(context),
                           );
                         },
                         icon: const Icon(Icons.exit_to_app),
@@ -557,19 +547,7 @@ class _HomePageState extends State<HomePage> {
                                         titleText: 'هل انت متأكد من حذف حسابك؟',
                                         disableText: 'لا',
                                         enableText: 'نعم',
-                                        enable: () {
-                                          Constants.getStorage.remove(
-                                            'userData',
-                                          );
-                                          Navigator.pushReplacement(
-                                            context,
-                                            PageTransition(
-                                              child: const LoginPage(),
-                                              type: PageTransitionType
-                                                  .bottomToTop,
-                                            ),
-                                          );
-                                        },
+                                        enable: () => logoutAndNavigateToLogin(context),
                                       );
                                       break;
                                     default:
@@ -1050,12 +1028,9 @@ class _HomePageState extends State<HomePage> {
         (item) => item[listKey] == cleanTitle,
       );
       if (alreadyExists) {
-        dialogBuilder(
-          context: context,
+        showInfoDialog(
+          context,
           titleText: 'تم تحميل هذا الملف مسبقا!',
-          disableText: '',
-          enableText: 'اغلاق',
-          enable: () => Navigator.of(context).pop(),
         );
         return;
       }

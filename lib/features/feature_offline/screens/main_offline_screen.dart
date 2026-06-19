@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:alhayat/common/utils/costum_dialog_message.dart';
+import 'package:alhayat/common/utils/dialog_helpers.dart';
 import 'package:alhayat/common/utils/player_widget.dart';
 import 'package:alhayat/features/feature_offline/widgets/offline_list_item.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -100,13 +100,7 @@ class _OfflinePageState extends State<OfflinePage> {
                             final fileExists = await File(filePath).exists();
 
                             if (!fileExists) {
-                              dialogBuilder(
-                                context: context,
-                                titleText: 'الملف غير موجود!',
-                                disableText: '',
-                                enableText: 'إغلاق',
-                                enable: () => Navigator.of(context).pop(),
-                              );
+                              showFileNotFoundDialog(context);
                               return;
                             }
 
@@ -163,13 +157,7 @@ class _OfflinePageState extends State<OfflinePage> {
                       final fileExists = await File(filePath).exists();
 
                       if (!fileExists) {
-                        dialogBuilder(
-                          context: context,
-                          titleText: 'الملف غير موجود!',
-                          disableText: '',
-                          enableText: 'إغلاق',
-                          enable: () => Navigator.of(context).pop(),
-                        );
+                        showFileNotFoundDialog(context);
                         return;
                       }
                       openFile(filePath);
@@ -204,13 +192,7 @@ class _OfflinePageState extends State<OfflinePage> {
     debugPrint('File exists: $fileExists');
 
     if (!fileExists) {
-      dialogBuilder(
-        context: context,
-        titleText: 'الملف غير موجود!',
-        disableText: '',
-        enableText: 'إغلاق',
-        enable: () => Navigator.of(context).pop(),
-      );
+      showFileNotFoundDialog(context);
       return;
     }
 
