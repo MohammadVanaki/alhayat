@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -17,6 +18,7 @@ class HijriDateController extends GetxController {
         hijriDate.value = 'خطا ';
       }
     } catch (e) {
+      debugPrint('Failed to fetch Hijri date: $e');
       hijriDate.value = 'خطای ';
     }
   }

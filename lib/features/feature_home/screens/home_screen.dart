@@ -367,7 +367,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           const Gap(3),
                           Text(
-                            Constants.getStorage.read('userData')['name'] ?? '',
+                            Constants.getStorage.read('userData')?['name'] ?? '',
                             style: TextStyle(
                               color: Theme.of(context).primaryColor,
                               fontSize: 16,
@@ -378,7 +378,7 @@ class _HomePageState extends State<HomePage> {
                           Text(
                             Constants.getStorage.read(
                                   'userData',
-                                )['study_stages'] ??
+                                )?['study_stages'] ??
                                 '',
                             style: TextStyle(
                               color: Theme.of(context).primaryColor,
@@ -1011,17 +1011,19 @@ class _HomePageState extends State<HomePage> {
   }
 
   fetchContent({required String uriTab}) {
-    debugPrint(
-      'token===========================>>>' +
-          Constants.getStorage.read('userData')['token'],
-    );
+    final userData = Constants.getStorage.read('userData');
+    final token = userData?['token'];
+    if (token == null) {
+      debugPrint('fetchContent: No auth token found, cannot load content.');
+      return;
+    }
+    debugPrint('token===========================>>>$token');
     setState(() {
       loadContent = true;
       controller.loadRequest(
         Uri.parse('https://ain-alhayat.com/Account?tab=$uriTab'),
         headers: {
-          "Authorization":
-              "Bearer ${Constants.getStorage.read('userData')['token']}",
+          "Authorization": "Bearer $token",
           "Embed": '1',
         },
       );
@@ -1039,59 +1041,71 @@ class _HomePageState extends State<HomePage> {
     print("fileExtension=====>$fileExtension");
 
     if (fileExtension == '.mp3' || fileExtension == '.pdf') {
-      final boxName = fileExtension == '.mp3' ? 'audioes' : 'pdfs';
-      final listKey = fileExtension == '.mp3' ? 'audioName' : 'pdfName';
+      try {
+        final boxName = fileExtension == '.mp3' ? 'audioes' : 'pdfs';
+        final listKey = fileExtension == '.mp3' ? 'audioName' : 'pdfName';
 
-      await GetStorage.init(boxName);
-      final storage = GetStorage(boxName);
-      List filesList = storage.read(boxName) ?? [];
+        await GetStorage.init(boxName);
+        final storage = GetStorage(boxName);
+        List filesList = storage.read(boxName) ?? [];
 
-      final alreadyExists = filesList.any(
-        (item) => item[listKey] == cleanTitle,
-      );
-      if (alreadyExists) {
-        dialogBuilder(
-          context: context,
-          titleText: 'تم تحميل هذا الملف مسبقا!',
-          disableText: '',
-          enableText: 'اغلاق',
-          enable: () => Navigator.of(context).pop(),
+        final alreadyExists = filesList.any(
+          (item) => item[listKey] == cleanTitle,
         );
-        return;
+        if (alreadyExists) {
+          dialogBuilder(
+            context: context,
+            titleText: 'تم تحميل هذا الملف مسبقا!',
+            disableText: '',
+            enableText: 'اغلاق',
+            enable: () => Navigator.of(context).pop(),
+          );
+          return;
+        }
+
+        final appDocDir = await getApplicationDocumentsDirectory();
+        final baseStorage = Platform.isAndroid
+            ? '/storage/emulated/0/Download'
+            : appDocDir.path;
+
+        final downloadDir = Directory(baseStorage);
+        if (!(await downloadDir.exists())) {
+          await downloadDir.create(recursive: true);
+        }
+
+        final fullFilePath = '$baseStorage/$fileName';
+
+        DownloadProgress.progress.value = 0;
+        showDownloadPanelNotifier.value = true;
+
+        final taskId = await FlutterDownloader.enqueue(
+          url: url.trim(),
+          savedDir: baseStorage,
+          fileName: fileName,
+          showNotification: true,
+          openFileFromNotification: true,
+        );
+
+        filesList.add({
+          listKey: cleanTitle,
+          'fileName': fileName,
+          'filePath': fullFilePath,
+        });
+        storage.write(boxName, filesList);
+        print('filesList after save: ${storage.read(boxName)}');
+      } catch (e) {
+        debugPrint('Download failed: $e');
+        showDownloadPanelNotifier.value = false;
+        if (context.mounted) {
+          dialogBuilder(
+            context: context,
+            titleText: 'فشل تحميل الملف. حاول مرة أخرى.',
+            disableText: '',
+            enableText: 'إغلاق',
+            enable: () => Navigator.of(context).pop(),
+          );
+        }
       }
-
-      final appDocDir = await getApplicationDocumentsDirectory();
-      final baseStorage = Platform.isAndroid
-          ? '/storage/emulated/0/Download'
-          : appDocDir.path;
-
-      final downloadDir = Directory(baseStorage);
-      if (!(await downloadDir.exists())) {
-        await downloadDir.create(recursive: true);
-      }
-
-      final fullFilePath = '$baseStorage/$fileName';
-
-      /// ✅ اینجا پنل رو فعال کن با استفاده از ValueNotifier
-      DownloadProgress.progress.value = 0;
-      showDownloadPanelNotifier.value = true; // مهم: تغییر مقدار notifier
-
-      final taskId = await FlutterDownloader.enqueue(
-        url: url.trim(),
-        savedDir: baseStorage,
-        fileName: fileName,
-        showNotification: true,
-        openFileFromNotification: true,
-      );
-
-      // ذخیره فایل
-      filesList.add({
-        listKey: cleanTitle,
-        'fileName': fileName,
-        'filePath': fullFilePath,
-      });
-      storage.write(boxName, filesList);
-      print('filesList after save: ${storage.read(boxName)}');
     }
   }
 

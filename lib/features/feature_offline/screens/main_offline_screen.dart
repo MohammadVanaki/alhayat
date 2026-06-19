@@ -235,27 +235,35 @@ class _OfflinePageState extends State<OfflinePage> {
   Future<void> loadOfflineFiles() async {
     print('🟢 loadOfflineFiles started');
 
-    // Initialize GetStorage boxes
-    await GetStorage.init('audioes');
-    await GetStorage.init('pdfs');
+    try {
+      // Initialize GetStorage boxes
+      await GetStorage.init('audioes');
+      await GetStorage.init('pdfs');
 
-    // Create storage instances
-    final audioStorage = GetStorage('audioes');
-    final pdfStorage = GetStorage('pdfs');
+      // Create storage instances
+      final audioStorage = GetStorage('audioes');
+      final pdfStorage = GetStorage('pdfs');
 
-    // Read audio list from storage
-    final audioListRaw =
-        audioStorage.read('audioes'); // If saved under key 'audioes'
-    print('🔵 audioes from storage: $audioListRaw');
+      // Read audio list from storage
+      final audioListRaw =
+          audioStorage.read('audioes'); // If saved under key 'audioes'
+      print('🔵 audioes from storage: $audioListRaw');
 
-    // Read pdf list from storage
-    final pdfListRaw = pdfStorage.read('pdfs'); // If saved under key 'pdfs'
-    print('🟣 pdfs from storage: $pdfListRaw');
+      // Read pdf list from storage
+      final pdfListRaw = pdfStorage.read('pdfs'); // If saved under key 'pdfs'
+      print('🟣 pdfs from storage: $pdfListRaw');
 
-    // Update the state with retrieved data
-    setState(() {
-      audioesList = audioListRaw ?? [];
-      pdfsList = pdfListRaw ?? [];
-    });
+      // Update the state with retrieved data
+      setState(() {
+        audioesList = audioListRaw ?? [];
+        pdfsList = pdfListRaw ?? [];
+      });
+    } catch (e) {
+      debugPrint('Failed to load offline files: $e');
+      setState(() {
+        audioesList = [];
+        pdfsList = [];
+      });
+    }
   }
 }

@@ -146,26 +146,48 @@ class _LoginPageState extends State<LoginPage> {
                         ],
                       );
                     case ConnectionState.done:
-                      return snapshot.data?['errors'][0] != null
-                          ? Row(
-                              children: <Widget>[
-                                const Icon(
-                                  Icons.warning_amber_rounded,
-                                  color: Colors.red,
-                                  size: 20,
-                                ),
-                                const Gap(5),
-                                Text(
-                                  snapshot.data['errors'][0],
-                                  style: const TextStyle(
-                                    color: Colors.red,
-                                    fontSize: 13,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
-                            )
-                          : const SizedBox();
+                      if (snapshot.hasError) {
+                        return Row(
+                          children: <Widget>[
+                            const Icon(
+                              Icons.warning_amber_rounded,
+                              color: Colors.red,
+                              size: 20,
+                            ),
+                            const Gap(5),
+                            Text(
+                              'فشل الاتصال بالخادم. تحقق من اتصالك بالإنترنت.',
+                              style: const TextStyle(
+                                color: Colors.red,
+                                fontSize: 13,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        );
+                      }
+                      final errors = snapshot.data?['errors'];
+                      if (errors != null && errors is List && errors.isNotEmpty) {
+                        return Row(
+                          children: <Widget>[
+                            const Icon(
+                              Icons.warning_amber_rounded,
+                              color: Colors.red,
+                              size: 20,
+                            ),
+                            const Gap(5),
+                            Text(
+                              errors[0] ?? '',
+                              style: const TextStyle(
+                                color: Colors.red,
+                                fontSize: 13,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        );
+                      }
+                      return const SizedBox();
                     default:
                       return const SizedBox();
                   }
